@@ -13,6 +13,8 @@ using Microsoft.Extensions.Logging;
 
 namespace Library_Management_System.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class UserController : Controller
     {
         private readonly ILogger<UserController> _logger;

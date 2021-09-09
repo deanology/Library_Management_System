@@ -54,7 +54,7 @@ namespace Library_Management_System.Services
                 throw new Exception("Cannot sign in User");
             }
             
-            var token = GenerateTokenAsync(user);
+            var token = await GenerateTokenAsync(user);
      
             //authentication successful
             return token;
@@ -85,13 +85,14 @@ namespace Library_Management_System.Services
             if (!addToRoleResult)
                 throw new Exception("Cannot assign user to the specified role");
 
-            var token = GenerateTokenAsync(await _roleRepository.GetApplicationUser(user.Email));
+            var token = await GenerateTokenAsync(await _roleRepository.GetApplicationUser(user.Email));
             return token;
         }
 
         private async Task<string> GenerateTokenAsync(IdentityUser user)
         {
-           
+            var a = _appSetting.Audience;
+            var b = _appSetting.Issuer;
             var jwtTokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSetting.Key);
             var tokenDescriptor = new SecurityTokenDescriptor

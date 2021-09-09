@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Library_Management_System.Entity;
 using Library_Management_System.Repositories;
 using Library_Management_System.Services;
+using Library_Management_System.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -37,6 +38,10 @@ namespace Library_Management_System
             services.AddControllers();
             //register Automapper
             services.AddAutoMapper(typeof(Startup));
+
+            //Configuration from AppSettings
+            services.Configure<AppSetting>(Configuration.GetSection("AppSetting"));
+
             //Adding DB Context with MSSQL
             services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
