@@ -25,8 +25,7 @@ namespace Library_Management_System.Services
         public async Task<ResponseModel> CreateCheckout(CheckOut checkout)
         {
             if (string.IsNullOrEmpty(checkout.Fullname) || string.IsNullOrEmpty(checkout.Email) ||
-                string.IsNullOrEmpty(checkout.PhoneNumber) || string.IsNullOrEmpty(checkout.NIN) ||
-                string.IsNullOrEmpty(checkout.CheckOutDate))
+                string.IsNullOrEmpty(checkout.PhoneNumber) || string.IsNullOrEmpty(checkout.NIN))
                 throw new Exception("All Fields are required");
 
             var checkComplete = new CheckOut
@@ -35,26 +34,19 @@ namespace Library_Management_System.Services
                 Email = checkout.Email,
                 NIN = checkout.NIN,
                 PhoneNumber = checkout.PhoneNumber,
-                CheckOutDate = checkout.CheckOutDate,
-                ExpectedReturnDate = DateTime.Now.ToShortDateString()
+                BookId = checkout.BookId,
+                CheckOutDate = DateTime.Now,
+                ExpectedReturnDate = DateTime.Now.AddDays(14)
             };
             var createBookResponse = await _iCheckoutRepository.CreateCheckout(checkComplete);
             if (createBookResponse)
             {
-                var response = new ResponseModel
-                {
-                    ResponseCode = "201",
-                    ResponseDescription = "Created Successfully"
-                };
+                var response = new ResponseModel();
                 return response;
             }
             else
             {
-                var response = new ResponseModel
-                {
-                    ResponseCode = "200",
-                    ResponseDescription = ""
-                };
+                var response = new ResponseModel();
                 return response;
             }
         }
@@ -63,21 +55,13 @@ namespace Library_Management_System.Services
             var allCheckouts = await _iCheckoutRepository.AllCheckouts();
             if (allCheckouts != null)
             {
-                var response = new ResponseModel
-                {
-                    ResponseCode = "200",
-                    ResponseDescription = "Successful",
-                    ResponseObject = allCheckouts
-                };
+                var response = new ResponseModel();
+                response.ResponseObject = allCheckouts;        
                 return response;
             }
             else
             {
-                var response = new ResponseModel
-                {
-                    ResponseCode = "200",
-                    ResponseDescription = ""
-                };
+                var response = new ResponseModel();
                 return response;
             }
         }

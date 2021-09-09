@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Library_Management_System.Models
@@ -9,8 +10,10 @@ namespace Library_Management_System.Models
         [Required] public string Title { get; set; }
         [Required] public string ISBN { get; set; }
         [Required] public string PublishYear { get; set; }
-        [Required] public decimal CoverPrice { get; set; }
+        [Required] public double CoverPrice { get; set; }
         [Required] public bool AvailabilityStatus { get; set; }
+        public ICollection<CheckOut> CheckOut { get; set; }
+        public ICollection<CheckIn> CheckIn { get; set; }
     }
     public class CheckOut
     {
@@ -19,8 +22,10 @@ namespace Library_Management_System.Models
         [Required] public string Email { get; set; }
         [Required] public string PhoneNumber { get; set; }
         [Required] public string NIN { get; set; }
-        [Required] public string CheckOutDate { get; set; }
-        public string ExpectedReturnDate { get; set; }
+        public DateTime CheckOutDate { get; set; }
+        public DateTime ExpectedReturnDate { get; set; }
+        public int BookId { get; set; }
+        public Books Book { get; set; }
     }
     public class CheckIn
     {
@@ -33,5 +38,11 @@ namespace Library_Management_System.Models
         public string ExpectedReturnDate { get; set; }
         public int PenaltyFee { get; set; }
         public int DaysDefaulted { get; set; }
+        public int BookId { get; set; }
+        public Books Book { get; set; }
+    }
+    public class Search
+    {
+        public string SearchTerm { get; set; }
     }
 }

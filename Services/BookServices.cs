@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Library_Management_System.Models;
@@ -11,8 +12,9 @@ namespace Library_Management_System.Services
     public interface IBookServices
     {
         Task<ResponseModel> CreateBook(Books book);
-        Task<ResponseModel> GetAllBooks();
-        Task<ResponseModel> SearchBooks(string searchTerm);
+        Task<IEnumerable<Books>> GetAllBooks();
+        Task<IEnumerable<Books>> SearchBooks(Search searchTerm);
+        Task<Books> GetBookByIsbn(string isbn);
     }
     public class BookServices : IBookServices
     {
@@ -40,72 +42,56 @@ namespace Library_Management_System.Services
             var createBookResponse = await _iBookRepository.CreateBook(newBook);
             if (createBookResponse)
             {
-                var response = new ResponseModel
-                {
-                    ResponseCode = "201",
-                    ResponseDescription = "Created Successfully"
-                };
+                var response = new ResponseModel();
                 return response;
             }
             else
             {
-                var response = new ResponseModel
-                {
-                    ResponseCode = "",
-                    ResponseDescription = "Bad Request"
-                };
+                var response = new ResponseModel();
                 return response;
             }
         }
 
-        public async Task<ResponseModel> GetAllBooks()
+        public async Task<IEnumerable<Books>> GetAllBooks()
         {
             var allBooks = await _iBookRepository.GetAll();
             if(allBooks != null)
             {
                 var sortedBooks = allBooks.ToList().OrderBy(x => x.PublishYear);
-                var response = new ResponseModel
-                {
-                    ResponseCode = "200",
-                    ResponseDescription = "Successful",
-                    ResponseObject = sortedBooks
-                };
-                return response;
+                return sortedBooks;
             }
             else
             {
-                var response = new ResponseModel
-                {
-                    ResponseCode = "200",
-                    ResponseDescription = ""
-                };
-                return response;
+                return null;
             }
         }
 
-        public async Task<ResponseModel> SearchBooks(string searchTerm)
+        public async Task<IEnumerable<Books>> SearchBooks(Search searchTerm)
         {
             var allBooks = await _iBookRepository.GetAll();
             if (allBooks != null)
             {
                 var sortedBooks = allBooks.ToList().
-                    Where(x => (x.Title.Contains(searchTerm) || x.ISBN.Contains(searchTerm)) && x.AvailabilityStatus == true);
-                var response = new ResponseModel
-                {
-                    ResponseCode = "200",
-                    ResponseDescription = "Successful",
-                    ResponseObject = sortedBooks
-                };
-                return response;
+                    Where(x => (x.Title.ToLower() == searchTerm.SearchTerm.ToLower() || x.ISBN.ToLower() == searchTerm.SearchTerm.ToLower()) && x.AvailabilityStatus == true);
+                
+                return sortedBooks;
             }
             else
             {
-                var response = new ResponseModel
-                {
-                    ResponseCode = "200",
-                    ResponseDescription = ""
-                };
-                return response;
+                return null;
+            }
+        }
+        public async Task<Books> GetBookByIsbn(string isbn)
+        {
+            var allBooks = await _iBookRepository.GetAll();
+            if (allBooks != null)
+            {
+                var sortedBooks = allBooks.ToList().Where(x => x.ISBN == isbn).FirstOrDefault();
+                return sortedBooks;
+            }
+            else
+            {
+                return null;
             }
         }
     }

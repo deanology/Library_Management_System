@@ -19,5 +19,6 @@ namespace Library_Management_System.Entity
         }
         public DbSet<Books> Books { get; set; }
         public DbSet<CheckOut> CheckOuts {get;set;}
+        public DbSet<CheckIn> CheckIns { get; set; }
     }
 }

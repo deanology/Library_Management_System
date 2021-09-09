@@ -13,20 +13,22 @@ namespace Library_Management_System.Services
     }
     public class CheckinServices : ICheckinServices
     {
-        private readonly ICheckoutRepository _iCheckoutRepository;
+        private readonly ICheckoutServices _iCheckoutServices;
         private readonly ILogger _logger;
-        public CheckinServices(ICheckoutRepository iCheckoutRepository, ILoggerFactory loggerFactory)
+        public CheckinServices(ICheckoutServices checkoutServices, ILoggerFactory loggerFactory)
         {
-            _iCheckoutRepository = iCheckoutRepository;
+            _iCheckoutServices = checkoutServices;
             _logger = loggerFactory.CreateLogger(GetType());
         }
         public Task<ResponseModel> CreateCheckout(CheckIn checkIn)
         {
             throw new NotImplementedException();
         }
-        public object GetCheckOutDetails(string username, string bookname)
+        public async Task<object> GetCheckOutDetailsAsync(string username, string bookname)
         {
-            var checkout = _iCheckoutRepository.GetAll();
+            var checkout = await _iCheckoutServices.GetAllCheckouts();
+            return checkout;
+
         }
     }
 }
