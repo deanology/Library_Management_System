@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Library_Management_System.Entity;
 using Library_Management_System.Repositories;
 using Library_Management_System.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -15,6 +17,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Library_Management_System
 {
@@ -41,9 +44,37 @@ namespace Library_Management_System
 
 
             //User Manager Service
-            //services.AddIdentity<ApplicationUser, ApplicationRole>()
-            //    .AddEntityFrameworkStores<ApplicationDbContext>()
-            //    .AddDefaultTokenProviders();
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
+            // Adding Authentication  
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            // Adding Jwt Bearer  
+            .AddJwtBearer(options =>
+            {
+                options.SaveToken = false;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuerSigningKey = true,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero,
+
+                    ValidAudience = Configuration["AppSetting:Audience"],
+                    ValidIssuer = Configuration["AppSetting:Issuer"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["AppSetting:Key"]))
+                };
+            });
+
+
             services.AddTransient<IBookServices, BookServices>();
             services.AddTransient<ICheckoutServices, CheckoutServices>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));

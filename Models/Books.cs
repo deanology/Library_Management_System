@@ -45,4 +45,9 @@ namespace Library_Management_System.Models
     {
         public string SearchTerm { get; set; }
     }
+    public class RegisterModel
+    {
+        public string EmailAddress { get; set; }
+        public string Password { get; set; }
+    }
 }
