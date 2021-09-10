@@ -23,15 +23,8 @@ namespace Library_Management_System.Repositories
             try
             {
                 var creatingCheckin = await Add(checkIn);
-                if (creatingCheckin)
-                {
-                    await SaveChanges();
-                    return creatingCheckin;
-                }
-                else
-                {
-                    return false;
-                }
+                await SaveChanges();
+                return creatingCheckin;
             }
             catch (Exception ex)
             {

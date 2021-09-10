@@ -37,15 +37,8 @@ namespace Library_Management_System.Repositories
             try
             {
                 var creatingCheckout = await Add(checkOut);
-                if (creatingCheckout)
-                {
-                    await SaveChanges();
-                    return creatingCheckout;
-                }
-                else
-                {
-                    return false;
-                }
+                await SaveChanges();
+                return creatingCheckout;
             }
             catch (Exception ex)
             {

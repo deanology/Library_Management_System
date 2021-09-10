@@ -40,15 +40,8 @@ namespace Library_Management_System.Repositories
             try
             {
                 var creatingBookResult = await Add(book);
-                if (creatingBookResult)
-                {
-                    await SaveChanges();
-                    return creatingBookResult;
-                }
-                else
-                {
-                    return false;
-                }
+                await SaveChanges();
+                return creatingBookResult;
             }
             catch (Exception ex)
             {

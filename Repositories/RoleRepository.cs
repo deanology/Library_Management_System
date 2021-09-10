@@ -33,8 +33,6 @@ namespace Library_Management_System.Repositories
                 });
                 if (roleCreated.Succeeded)
                     return true;
-                else
-                    return false;
             }
             return true;
         }
@@ -48,8 +46,6 @@ namespace Library_Management_System.Repositories
                 {
                     return true;
                 }
-                else
-                    return false;
             }
             return false;
         }
