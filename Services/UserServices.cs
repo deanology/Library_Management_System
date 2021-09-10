@@ -82,7 +82,7 @@ namespace Library_Management_System.Services
                 throw new Exception("Unable to register, please try again later.");
 
             //assign created user to role
-            var addToRoleResult = await _roleRepository.AddUserToRole(user, "User");
+            var addToRoleResult = await _roleRepository.AddUserToRole(user, "Admin");
             if (!addToRoleResult)
                 throw new Exception("Cannot assign user to the specified role");
 

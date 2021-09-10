@@ -31,8 +31,8 @@ namespace Library_Management_System.Controllers
         {
             return Ok();
         }
-        //[Authorize(Roles = "Admin")]
-        [Authorize]
+        [Authorize(Roles = "User")]
+        //[Authorize]
         [HttpPost("createbooks")]
         public async Task<IActionResult> CreateBookAsync([FromBody]Books books)
         {
