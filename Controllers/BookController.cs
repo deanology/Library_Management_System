@@ -6,6 +6,7 @@ using Library_Management_System.Models;
 using Library_Management_System.Response;
 using Library_Management_System.Services;
 using Library_Management_System.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -30,6 +31,7 @@ namespace Library_Management_System.Controllers
         {
             return Ok();
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost("createbooks")]
         public async Task<IActionResult> CreateBookAsync([FromBody]Books books)
         {
@@ -62,6 +64,7 @@ namespace Library_Management_System.Controllers
             }
             
         }
+        [Authorize]
         [HttpGet("allbooks")]
         public async Task<IActionResult> GetAllBooksAsync()
         {
@@ -96,6 +99,7 @@ namespace Library_Management_System.Controllers
             }
            
         }
+        [Authorize]
         [HttpGet("search")]
         public async Task<IActionResult> SearchForBooksAsync(Search searchTerm)
         {

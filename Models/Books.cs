@@ -30,20 +30,17 @@ namespace Library_Management_System.Models
     public class CheckIn
     {
         public int Id { get; set; }
-        public string Fullname { get; set; }
         public string Email { get; set; }
-        public string PhoneNumber { get; set; }
-        public string NIN { get; set; }
-        public string CheckOutDate { get; set; }
-        public string ExpectedReturnDate { get; set; }
         public int PenaltyFee { get; set; }
         public int DaysDefaulted { get; set; }
-        public int BookId { get; set; }
-        public Books Book { get; set; }
     }
     public class Search
     {
         public string SearchTerm { get; set; }
+    }
+    public class CheckingEmail
+    {
+        public string Email { get; set; }
     }
     public class RegisterModel
     {

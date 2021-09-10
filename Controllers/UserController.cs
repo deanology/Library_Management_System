@@ -61,6 +61,37 @@ namespace Library_Management_System.Controllers
             }
 
         }
+        [HttpPost("registeradmin")]
+        public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModel model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(new
+                    {
+                        ResponseCode = ResponseCodes.InvalidRequest,
+                        ResponseDescription = "Incomplete Parameters"
+                    });
+                var user = await _iUserService.CreateAdminAsync(model);
+                return Ok(new
+                {
+                    ResponseCode = StatusCodes.Status201Created,
+                    ResponseObject = new
+                    {
+                        user
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    ResponseCode = ResponseCodes.UnexpectedError,
+                    ResponseDescription = $"An unexpected error occured. Please try again!, {ex.Message}"
+                });
+            }
+
+        }
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] RegisterModel model)
         {

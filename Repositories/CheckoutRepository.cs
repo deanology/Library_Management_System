@@ -49,7 +49,7 @@ namespace Library_Management_System.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error occured in creating new book, server returned : {ex.Message}");
+                _logger.LogError($"Error occured in creating chechout, server returned : {ex.Message}");
                 return false;
             }
         }

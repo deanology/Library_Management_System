@@ -83,10 +83,12 @@ namespace Library_Management_System
             services.AddTransient<IBookServices, BookServices>();
             services.AddTransient<ICheckoutServices, CheckoutServices>();
             services.AddTransient<IUserServices, UserServices>();
+            services.AddTransient<ICheckinServices, CheckinServices>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddTransient<IBookRepository, BookRepository>();
             services.AddTransient<ICheckoutRepository, CheckoutRepository>();
             services.AddTransient<IRoleRepository, RoleRepository>();
+            services.AddTransient<ICheckinRepository, CheckinRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

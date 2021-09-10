@@ -17,6 +17,7 @@ namespace Library_Management_System.Services
     public interface IUserServices
     {
         Task<object> CreateAsync(RegisterModel model);
+        Task<object> CreateAdminAsync(RegisterModel model);
         Task<object> AuthAsync(RegisterModel model);
     }
     public class UserServices : IUserServices
@@ -60,6 +61,35 @@ namespace Library_Management_System.Services
             return token;
         }
 
+        public async Task<object> CreateAdminAsync(RegisterModel model)
+        {
+            //check if user is existing
+            var existingUser = await _userManager.FindByEmailAsync(model.EmailAddress);
+            if (existingUser != null)
+                throw new Exception($"Email {model.EmailAddress} already exist");
+
+            //create user role
+            var userRole = await _roleRepository.SeedRoleAsync("Admin");
+
+            //create user
+            var user = new IdentityUser
+            {
+                Email = model.EmailAddress,
+                UserName = model.EmailAddress,
+            };
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if (!result.Succeeded)
+                throw new Exception("Unable to register, please try again later.");
+
+            //assign created user to role
+            var addToRoleResult = await _roleRepository.AddUserToRole(user, "User");
+            if (!addToRoleResult)
+                throw new Exception("Cannot assign user to the specified role");
+
+            var token = await GenerateTokenAsync(await _roleRepository.GetApplicationUser(user.Email));
+            return token;
+        }
+
         public async Task<object> CreateAsync(RegisterModel model)
         {
             //check if user is existing
@@ -91,8 +121,6 @@ namespace Library_Management_System.Services
 
         private async Task<string> GenerateTokenAsync(IdentityUser user)
         {
-            var a = _appSetting.Audience;
-            var b = _appSetting.Issuer;
             var jwtTokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSetting.Key);
             var tokenDescriptor = new SecurityTokenDescriptor

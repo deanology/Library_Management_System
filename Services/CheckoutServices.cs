@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Library_Management_System.Models;
 using Library_Management_System.Repositories;
@@ -10,15 +12,17 @@ namespace Library_Management_System.Services
     public interface ICheckoutServices
     {
         Task<ResponseModel> CreateCheckout(CheckOut checkout);
-        Task<ResponseModel> GetAllCheckouts();
+        Task<IEnumerable<CheckOut>> GetAllCheckouts();
     }
     public class CheckoutServices : ICheckoutServices
     {
         private readonly ICheckoutRepository _iCheckoutRepository;
+        private readonly IBookRepository _iBookRepository;
         private readonly ILogger _logger;
-        public CheckoutServices(ICheckoutRepository iCheckoutRepository, ILoggerFactory loggerFactory)
+        public CheckoutServices(ICheckoutRepository iCheckoutRepository, ILoggerFactory loggerFactory, IBookRepository iBookRepository)
         {
             _iCheckoutRepository = iCheckoutRepository;
+            _iBookRepository = iBookRepository;
             _logger = loggerFactory.CreateLogger(GetType());
         }
 
@@ -41,7 +45,14 @@ namespace Library_Management_System.Services
             var createBookResponse = await _iCheckoutRepository.CreateCheckout(checkComplete);
             if (createBookResponse)
             {
+                //get book and make it unavailable
+                var book = await _iBookRepository.GetById(checkout.BookId);
+                book.AvailabilityStatus = false;
+                _iBookRepository.UpsertAsync(book);
+                await _iBookRepository.SaveChanges();
+
                 var response = new ResponseModel();
+                response.ResponseObject = "Checkout Successful";
                 return response;
             }
             else
@@ -50,19 +61,17 @@ namespace Library_Management_System.Services
                 return response;
             }
         }
-        public async Task<ResponseModel> GetAllCheckouts()
+        public async Task<IEnumerable<CheckOut>> GetAllCheckouts()
         {
-            var allCheckouts = await _iCheckoutRepository.AllCheckouts();
-            if (allCheckouts != null)
+            var allCheckout = await _iCheckoutRepository.AllCheckouts();
+            if (allCheckout != null)
             {
-                var response = new ResponseModel();
-                response.ResponseObject = allCheckouts;        
-                return response;
+                var checkouts = allCheckout.ToList();
+                return checkouts;
             }
             else
             {
-                var response = new ResponseModel();
-                return response;
+                return null;
             }
         }
     }

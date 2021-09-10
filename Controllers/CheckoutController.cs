@@ -7,6 +7,7 @@ using Library_Management_System.Request;
 using Library_Management_System.Response;
 using Library_Management_System.Services;
 using Library_Management_System.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -33,6 +34,7 @@ namespace Library_Management_System.Controllers
         {
             return Ok();
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost("addcheckout")]
         public async Task<IActionResult> CheckoutAsync(CheckoutPayload checkoutPayload)
         {
